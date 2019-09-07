@@ -6,7 +6,7 @@ from gae import mlgcn
 flags = tf.app.flags
 FLAGS = flags.FLAGS
 flags.DEFINE_float('learning_rate', 0.01, 'Initial learning rate.')
-flags.DEFINE_integer('epochs', 10, 'Number of epochs to train.')
+flags.DEFINE_integer('epochs', 100, 'Number of epochs to train.')
 flags.DEFINE_integer('hidden1', 32, 'Number of units in hidden layer 1.')
 flags.DEFINE_integer('hidden2', 16, 'Number of units in hidden layer 2.')
 flags.DEFINE_float('weight_decay', 0., 'Weight for L2 loss on embedding matrix.')
@@ -24,7 +24,7 @@ def parse_args():
     parser.add_argument('--input', nargs='?', default='gae/data/brain.list',
                         help='Path to a file containing locations of network layers')
 
-    parser.add_argument('--outdir', nargs='?', default='emb',
+    parser.add_argument('--outdir', nargs='?', default='E:/python/gae-master/gae-master/gae/emb/',
                         help='Path to a directory where results are saved')
 
     parser.add_argument('--hierarchy', nargs='?', default='gae/data/brain.hierarchy',
@@ -72,3 +72,18 @@ def main(args):
 
 args = parse_args()
 main(args)
+
+
+
+import matplotlib.pyplot as plt
+# import networkx as nx
+
+# G = nx.karate_club_graph()
+# print("Node Degree")
+# for v in G:
+#     print('%s %s' % (v, G.degree(v)))
+#
+# nx.draw_circular(G, with_labels=True)
+# edgs =list(G.edges())
+# print('done')
+# plt.show()

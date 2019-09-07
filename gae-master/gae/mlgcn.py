@@ -203,7 +203,11 @@ class MlGCN():
 
             # ------vector generation -----------------------------
             vectors = sess.run(model.embeddings, feed_dict=feed_dict)
-            fname = pjoin(self.out_dir, net_name % '.emb')
+            fname = self.out_dir + net_name +'vectors.txt'
+            # with open(fname, 'a+') as fout:
+            #     for line in np.array(vectors):
+            #         fout.write(line + "\n")
+            np.savetxt(fname, np.array(vectors), fmt="%s", delimiter='  ')
             self.log.info('Saving vectors: %s' % fname)
             # ==============================================================
             self.log.info('after exec gcn : %s' % net_name)

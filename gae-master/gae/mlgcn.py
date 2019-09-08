@@ -62,14 +62,65 @@ class MlGCN():
             new_nets[net_name] = nx.relabel_nodes(net, mapping, copy=False)
         return new_nets
 
+    def update_internal_vectors(
+            self, all_nodes, leaf_vectors, internal_vectors):
+        new_internal_vectors = {}
+        for hnode in self.hierarchy.nodes():
+            if hnode in self.nets:
+                # leaf vectors are optimized separately
+                continue
+            self.log.info('Updating internal hierarchy node: %s' % hnode)
+            new_internal_vectors[hnode] = {}
+            children = list(self.hierarchy.successors(hnode))
+            parents = list(self.hierarchy.predecessors(hnode))
+            for node in all_nodes:
+                # update internal vectors (see Eq. 4 in Gopal et al.)
+                if parents:
+                    t1 = 1. / (len(children) + 1.)
+                else:
+                    t1 = 1. / len(children)
+                t2 = [np.zeros(leaf_vectors.values()[0].shape)]
+                for child in children:
+                    if child in self.nets:
+                        node_name = '%s__%s' % (child, node)
+                        # node can be missing in certain networks
+                        if node_name in leaf_vectors:
+                            t2.append(leaf_vectors[node_name])
+                    else:
+                        t2.append(internal_vectors[child][node])
+                if parents:
+                    parent = parents[0]
+                    assert len(parents) == 1, 'Problem'
+                    parent_vector = internal_vectors[parent][node]
+                else:
+                    # root of the hierarchy
+                    parent_vector = 0
+                new_internal_vector = t1 * (parent_vector + sum(t2))
+                new_internal_vectors[hnode][node] = new_internal_vector
+        return new_internal_vectors
+
     def get_all_nodes(self):
         all_nodes = set()
         for _, net in self.nets.items():
-            # nodes = [node.split('__')[1] for node in net.nodes()]
-            nodes = [node for node in net.nodes()]
+            nodes = [node.split('__')[1] for node in net.nodes()]
+            # nodes = [node for node in net.nodes()]
             all_nodes.update(nodes)
         self.log.info('All nodes: %d' % len(all_nodes))
         return list(all_nodes)
+
+    def init_internal_vectors(self, all_nodes):
+        internal_vectors = {}
+        for hnode in self.hierarchy.nodes():
+            if hnode in self.nets:
+                # leaf vectors are optimized separately
+                continue
+            internal_vectors[hnode] = {}
+            for node in all_nodes:
+                vector = (self.rng.rand(self.dimension) - 0.5) / self.dimension
+                internal_vectors[hnode][node] = vector
+            n_vectors = len(internal_vectors[hnode])
+            self.log.info('Hierarchy node: %s -- %d' % (hnode, n_vectors))
+        return internal_vectors
 
     def get_leaf_vectors(self, model):
         leaf_vectors = {}
@@ -83,6 +134,7 @@ class MlGCN():
         """Neural embedding of a multilayer network"""
         self.nets = self.relabel_nodes()
         all_nodes = self.get_all_nodes()
+        internal_vectors = self.init_internal_vectors(all_nodes)
         tmp_fname = pjoin(self.out_dir, 'tmp.emb')
         for net_name, net in self.nets.items():
             self.log.info('Run GCN For Net: %s' % net_name)
@@ -219,9 +271,12 @@ class MlGCN():
             print('Test AP score: ' + str(ap_score))
 
             # ------vector generation -----------------------------
-            vectors = sess.run(model.embeddings, feed_dict=feed_dict)
+            # temp = self.get_leaf_vectors(model)
+
+            leaf_vectors = sess.run(model.embeddings, feed_dict=feed_dict)
+            internal_vectors = self.update_internal_vectors(all_nodes, leaf_vectors, internal_vectors)
             fname = self.out_dir + net_name +'_vectors.txt'
-            np.savetxt(fname, np.array(vectors), fmt="%s", delimiter='  ')
+            np.savetxt(fname, np.array(leaf_vectors), fmt="%s", delimiter='  ')
 
             self.log.info('Saving vectors: %s' % fname)
             # ==============================================================

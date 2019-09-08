@@ -9,8 +9,8 @@ def read_net(fname, weighted, directed, log):
         G = nx.read_edgelist(inodetype=int, data=(('weight', float),),
                              create_using=nx.DiGraph())
     else:
-        G = nx.read_edgelist(fname, nodetype=int, create_using=nx.DiGraph())
-        # G = nx.karate_club_graph()
+        # G = nx.read_edgelist(fname, nodetype=int, create_using=nx.DiGraph())
+        G = nx.karate_club_graph()
         for edge in G.edges():
             G[edge[0]][edge[1]]['weight'] = 1
 
@@ -25,8 +25,6 @@ def read_net(fname, weighted, directed, log):
 
 
 def read_nets(net_list, weighted, directed, log):
-    G = nx.karate_club_graph()
-    edgs = list(G.edges())
     nets = [(fname.replace('/', '_').strip(),
              read_net(fname.strip(), weighted, directed, log))
             for fname in open(net_list)]

@@ -21,13 +21,13 @@ dataset_str = FLAGS.dataset
 def parse_args():
     parser = argparse.ArgumentParser(description='Run MlGCN')
 
-    parser.add_argument('--input', nargs='?', default='gae/data/brain.list',
+    parser.add_argument('--input', nargs='?', default='gae/testdata/brain.list',
                         help='Path to a file containing locations of network layers')
 
     parser.add_argument('--outdir', nargs='?', default='gae/emb/',
                         help='Path to a directory where results are saved')
 
-    parser.add_argument('--hierarchy', nargs='?', default='gae/data/brain.hierarchy',
+    parser.add_argument('--hierarchy', nargs='?', default='gae/testdata/brain.hierarchy',
                         help='Path to a file containing multi-layer network hierarchy')
 
     parser.add_argument('--dimension', type=int, default=18,

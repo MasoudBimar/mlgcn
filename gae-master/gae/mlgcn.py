@@ -61,6 +61,7 @@ class MlGCN():
                 return '%s__%d' % (net_name, x)
             new_nets[net_name] = nx.relabel_nodes(net, mapping, copy=False)
         return new_nets
+
     def get_all_nodes(self):
         all_nodes = set()
         for _, net in self.nets.items():
@@ -69,6 +70,14 @@ class MlGCN():
             all_nodes.update(nodes)
         self.log.info('All nodes: %d' % len(all_nodes))
         return list(all_nodes)
+
+    def get_leaf_vectors(self, model):
+        leaf_vectors = {}
+        for word, val in model.vocab.items():
+            leaf_vector = model.syn0[val.index]
+            assert type(word) == str, 'Problems with vocabulary'
+            leaf_vectors[word] = leaf_vector
+        return leaf_vectors
 
     def gcn_multilayer(self):
         """Neural embedding of a multilayer network"""
@@ -211,7 +220,7 @@ class MlGCN():
 
             # ------vector generation -----------------------------
             vectors = sess.run(model.embeddings, feed_dict=feed_dict)
-            fname = self.out_dir + net_name +'vectors.txt'
+            fname = self.out_dir + net_name +'_vectors.txt'
             np.savetxt(fname, np.array(vectors), fmt="%s", delimiter='  ')
 
             self.log.info('Saving vectors: %s' % fname)
@@ -219,7 +228,7 @@ class MlGCN():
             self.log.info('after exec gcn : %s' % net_name)
 
         self.log.info('Done!')
-        np.savetxt(self.out_dir + 'ALl_Nodes.txt', all_nodes, fmt="%s", delimiter='  ')
+        np.savetxt(self.out_dir + 'ALL_Nodes.txt', all_nodes, fmt="%s", delimiter='  ')
 
         # fname = pjoin(self.out_dir, 'internal_vectors.emb')
         # self.log.info('Saving internal vectors: %s' % fname)

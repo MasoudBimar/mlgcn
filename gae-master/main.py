@@ -24,7 +24,7 @@ def parse_args():
     parser.add_argument('--input', nargs='?', default='gae/data/brain.list',
                         help='Path to a file containing locations of network layers')
 
-    parser.add_argument('--outdir', nargs='?', default='E:/python/gae-master/gae-master/gae/emb/',
+    parser.add_argument('--outdir', nargs='?', default='gae/emb/',
                         help='Path to a directory where results are saved')
 
     parser.add_argument('--hierarchy', nargs='?', default='gae/data/brain.hierarchy',
@@ -73,17 +73,3 @@ def main(args):
 args = parse_args()
 main(args)
 
-
-
-import matplotlib.pyplot as plt
-# import networkx as nx
-
-# G = nx.karate_club_graph()
-# print("Node Degree")
-# for v in G:
-#     print('%s %s' % (v, G.degree(v)))
-#
-# nx.draw_circular(G, with_labels=True)
-# edgs =list(G.edges())
-# print('done')
-# plt.show()

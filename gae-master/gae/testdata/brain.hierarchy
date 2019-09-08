@@ -1,0 +1,10 @@
+brain_NODE	gae/testdata/edgelists/frontal_lobe.edgelist
+brain_NODE	gae/testdata/edgelists/parietal_lobe.edgelist
+brain_NODE	gae/testdata/edgelists/occipital_lobe.edgelist
+brain_NODE	gae/testdata/edgelists/temporal_lobe.edgelist
+brain_NODE	brain_stem_NODE
+brain_stem_NODE	gae/testdata/edgelists/cerebellum.edgelist
+brain_stem_NODE	gae/testdata/edgelists/midbrain.edgelist
+brain_stem_NODE	gae/testdata/edgelists/substantia_nigra.edgelist
+brain_stem_NODE	gae/testdata/edgelists/pons.edgelist
+brain_stem_NODE	gae/testdata/edgelists/medulla_oblongata.edgelist

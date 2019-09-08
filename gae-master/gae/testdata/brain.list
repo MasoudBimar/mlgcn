@@ -1,0 +1,9 @@
+gae/testdata/edgelists/frontal_lobe.edgelist
+gae/testdata/edgelists/parietal_lobe.edgelist
+gae/testdata/edgelists/occipital_lobe.edgelist
+gae/testdata/edgelists/temporal_lobe.edgelist
+gae/testdata/edgelists/cerebellum.edgelist
+gae/testdata/edgelists/midbrain.edgelist
+gae/testdata/edgelists/substantia_nigra.edgelist
+gae/testdata/edgelists/pons.edgelist
+gae/testdata/edgelists/medulla_oblongata.edgelist

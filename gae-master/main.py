@@ -5,8 +5,9 @@ from gae import mlgcn
 # Settings
 flags = tf.app.flags
 FLAGS = flags.FLAGS
-flags.DEFINE_float('learning_rate', 0.01, 'Initial learning rate.')
-flags.DEFINE_integer('epochs', 100, 'Number of epochs to train.')
+# lr=0.007 & epoch = 300
+flags.DEFINE_float('learning_rate', 0.008, 'Initial learning rate.')
+flags.DEFINE_integer('epochs',1, 'Number of epochs to train.')
 flags.DEFINE_integer('hidden1', 32, 'Number of units in hidden layer 1.')
 flags.DEFINE_integer('hidden2', 16, 'Number of units in hidden layer 2.')
 flags.DEFINE_float('weight_decay', 0., 'Weight for L2 loss on embedding matrix.')
@@ -21,13 +22,13 @@ dataset_str = FLAGS.dataset
 def parse_args():
     parser = argparse.ArgumentParser(description='Run MlGCN')
 
-    parser.add_argument('--input', nargs='?', default='gae/testdata/brain.list',
+    parser.add_argument('--input', nargs='?', default='gae/data/brain.list',
                         help='Path to a file containing locations of network layers')
 
     parser.add_argument('--outdir', nargs='?', default='gae/emb/',
                         help='Path to a directory where results are saved')
 
-    parser.add_argument('--hierarchy', nargs='?', default='gae/testdata/brain.hierarchy',
+    parser.add_argument('--hierarchy', nargs='?', default='gae/data/brain.hierarchy',
                         help='Path to a file containing multi-layer network hierarchy')
 
     parser.add_argument('--dimension', type=int, default=18,
@@ -51,7 +52,7 @@ def parse_args():
     parser.add_argument('--weight_decay', type=float, default=FLAGS.weight_decay, help='Weight for L2 loss on embedding matrix.')
     parser.add_argument('--dropout', type=float, default=FLAGS.dropout, help='Dropout rate (1 - keep probability).')
 
-    parser.add_argument('--model', type=str, default='gcn_ae', help='Model string.')
+    parser.add_argument('--model', type=str, default=FLAGS.model, help='Model string.')
     # parser.add_argument('dataset', 'cora', 'Dataset string.')
     parser.add_argument('--features',type=int,default=FLAGS.features, help='Whether to use features (1) or not (0).')
     parser.set_defaults(directed=False)
@@ -68,8 +69,9 @@ def main(args):
         dropout=args.dropout, weight_decay=args.weight_decay,
         hidden1=args.hidden1, hidden2=args.hidden2, learning_rate=args.learning_rate)
     on.gcn_multilayer()
+    on.gcn_predict()
+    on.gcn_plot()
 
 
 args = parse_args()
 main(args)
-

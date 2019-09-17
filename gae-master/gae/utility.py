@@ -9,8 +9,8 @@ def read_net(fname, weighted, directed, log):
         G = nx.read_edgelist(inodetype=int, data=(('weight', float),),
                              create_using=nx.DiGraph())
     else:
-        # G = nx.read_edgelist(fname, nodetype=int, create_using=nx.DiGraph())
-        G = nx.karate_club_graph()
+        G = nx.read_edgelist(fname, nodetype=int, create_using=nx.DiGraph())
+        # G = nx.karate_club_graph()
         for edge in G.edges():
             G[edge[0]][edge[1]]['weight'] = 1
 
@@ -28,7 +28,15 @@ def read_nets(net_list, weighted, directed, log):
     nets = [(fname.replace('/', '_').strip(),
              read_net(fname.strip(), weighted, directed, log))
             for fname in open(net_list)]
-    return dict(nets)
+
+    collapsed = nx.Graph()
+    num_edges = 0
+    for net in nets:
+        collapsed.add_edges_from(net[1].edges())
+
+    # print(collapsed.nodes)
+    myDict = {key: value for key, value in zip(sorted(collapsed.nodes, key=lambda x: x), range(len(collapsed.nodes)))}
+    return dict(nets),myDict
 
 
 def read_hierarchy(fname, log):
